@@ -16,8 +16,44 @@ app.get("/files/data", async (req, res) => {
         },
       }
     );
-    
-    res.send(fileListResponse.data);
+
+    const files = fileListResponse.data.files;
+
+    const formattedFiles = await Promise.all(
+      files.map(async (filename) => {
+        try {
+          const fileUrl = `${process.env.API_BASE_URL}/file/${filename}`;
+          const fileResponse = await axios.get(fileUrl, {
+            headers: {
+              Authorization: `Bearer ${process.env.API_KEY}`,
+            },
+          });
+          // console.log('>>>>');
+          // console.log('filename', filename);
+          const data = await fileResponse.data;
+          // console.log('data', data);
+
+          const lines = fileResponse.data.split('\n').slice(1);
+
+          const formattedLines = lines
+            .map((line) => line.split(','))
+            .filter((line) => line.length === 4)
+            .map(([file, text, number, hex]) => ({ file, text, number: parseInt(number), hex }));
+          
+          console.log('formattedLines', formattedLines);
+
+          return {
+            filename,
+            lines: formattedLines,
+          };
+        } catch (error) {
+          console.error(`Error downloading file "${filename}"`);
+          return null;
+        }
+      })
+    );
+
+    res.json(formattedFiles.filter((file) => file !== null));
   } catch (err) {
     res.status(500).send("Internal Server Error: ", err.message);
   }
