@@ -28,19 +28,27 @@ app.get("/files/data", async (req, res) => {
               Authorization: `Bearer ${process.env.API_KEY}`,
             },
           });
-          // console.log('>>>>');
-          // console.log('filename', filename);
-          const data = await fileResponse.data;
-          // console.log('data', data);
 
           const lines = fileResponse.data.split('\n').slice(1);
 
           const formattedLines = lines
             .map((line) => line.split(','))
             .filter((line) => line.length === 4)
-            .map(([file, text, number, hex]) => ({ file, text, number: parseInt(number), hex }));
+            .map(([file, text, number, hex]) => { 
+              const parsedNumber = parseInt(number);
+              const isValidHex = /^[0-9a-fA-F]{32}$/.test(hex);
+
+              if (isNaN(parsedNumber) || !isValidHex) {
+                return null; // Skip invalid lines
+              }
+              
+              return { file, text, number: parsedNumber, hex };
+             })
+            .filter(Boolean);
           
-          console.log('formattedLines', formattedLines);
+          if (formattedLines.length === 0) {
+            return null;
+          };
 
           return {
             filename,
