@@ -1,5 +1,8 @@
 # Backend Files Application
 ---
+:rocket: Go to the deployed app: [![Deployed](https://img.shields.io/badge/Deployed-Live-green.svg)](https://server-cube-app-production.up.railway.app/files/data)
+
+
 This is the backend side of Files Web Application.
 
 ## Config-environment
@@ -45,15 +48,15 @@ Perfect! Let's clone the repo, and install the dependencies of the project.
 
 1. List of files 
     ```sh
-    http://localhost:3000/files/list
+    http://${host}/files/list
     ```
 2. Formatted files data
     ```sh
-    http://localhost:3000/files/data
+    http://${host}/files/data
     ```
 3. Specific formatted file data
     ```sh
-    http://localhost:3000/files/data?fileName=${fileName}
+    http://${host}/files/data?fileName=${fileName}
     ```
    
  
