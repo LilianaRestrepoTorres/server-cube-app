@@ -6,7 +6,8 @@ const app = express();
 
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://client-cube-app.vercel.app',
+  methods: ['GET']
 }))
 
 // Endpoint to fetch and format data from the external API
