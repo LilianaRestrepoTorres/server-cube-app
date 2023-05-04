@@ -6,7 +6,7 @@ const app = express();
 
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://127.0.0.1:5173',
+  origin: 'http://localhost:5173',
 }))
 
 // Endpoint to fetch and format data from the external API
@@ -104,6 +104,6 @@ app.get('/files/list', async (req, res) => {
   }
 });
 
-const PORT = 3000;
-const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
 module.exports = server;
