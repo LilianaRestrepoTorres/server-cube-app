@@ -17,8 +17,21 @@ app.get("/files/data", async (req, res) => {
       }
     );
 
+    const fileNames = data.files;
+
+    let fileNameFilter;
+    if (req.query.fileName) {
+      fileNameFilter = req.query.fileName;
+      if (!fileNames.includes(fileNameFilter)) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+    }
+
     const formattedFiles = await Promise.all(
       data.files.map(async (filename) => {
+        if (fileNameFilter && filename !== fileNameFilter) {
+          return null;
+        }
         try {
           const fileUrl = `${process.env.API_BASE_URL}/file/${filename}`;
           const fileResponse = await axios.get(fileUrl, {
