@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "npm run build && node server.js"
+    "start": "node server.js",
+    "build": ""
   },
   "keywords": [],
   "author": "",
