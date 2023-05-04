@@ -8,7 +8,7 @@ const app = express();
 app.get("/files/data", async (req, res) => {
   try {
     // Call the API to get the list of files
-    const fileListResponse = await axios(
+    const { data } = await axios(
       `${process.env.API_BASE_URL}/files`,
       {
         headers: {
@@ -17,10 +17,8 @@ app.get("/files/data", async (req, res) => {
       }
     );
 
-    const files = fileListResponse.data.files;
-
     const formattedFiles = await Promise.all(
-      files.map(async (filename) => {
+      data.files.map(async (filename) => {
         try {
           const fileUrl = `${process.env.API_BASE_URL}/file/${filename}`;
           const fileResponse = await axios.get(fileUrl, {
@@ -64,6 +62,27 @@ app.get("/files/data", async (req, res) => {
     res.json(formattedFiles.filter((file) => file !== null));
   } catch (err) {
     res.status(500).send("Internal Server Error: ", err.message);
+  }
+});
+
+app.get('/files/list', async (req, res) => {
+  try {
+    const { data } = await axios.get(
+      `${process.env.API_BASE_URL}/files`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.API_KEY}`,
+        },
+      }
+    );
+
+    res.json(data);
+  } catch (error) {
+    if (error.response && error.response.status === 500) {
+      return res.status(500).json({ message: 'External API error' });
+    }
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
