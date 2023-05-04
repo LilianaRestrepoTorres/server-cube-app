@@ -4,6 +4,11 @@ require('dotenv').config();
 
 const app = express();
 
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://127.0.0.1:5173',
+}))
+
 // Endpoint to fetch and format data from the external API
 app.get("/files/data", async (req, res) => {
   try {
